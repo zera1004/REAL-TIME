@@ -1,4 +1,5 @@
 import { CLIENT_VERSION } from './Constants.js';
+import { initStage, setStage } from './GameData.js';
 
 const socket = io('http://localhost:3000', {
   query: {
@@ -8,7 +9,15 @@ const socket = io('http://localhost:3000', {
 
 let userId = null;
 socket.on('response', (data) => {
-  console.log(data);
+  console.log('socket',data);
+  if (data.id === 'initGame') {
+    const { stage } = data;
+    initStage(stage);
+  }
+  if (data.id === 'moveStage') {
+    const { stage } = data;
+    setStage(stage);
+  }
 });
 
 socket.on('connection', (data) => {

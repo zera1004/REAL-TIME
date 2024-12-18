@@ -14,7 +14,6 @@ export const moveStageHandler = (userId, payload) => {
   // 오름차순 -> 가장 큰 스테이지 ID를 확인 <- 유저의 현재 스테이지
   currentStages.sort((a, b) => a.id - b.id);
   const currentStage = currentStages[currentStages.length - 1];
-
   //클라이언트 vs 서버 비교
   if (currentStage.id !== payload.currentStage) {
     return { status: 'fail', message: 'Current Stage mismatch' };
@@ -38,5 +37,5 @@ export const moveStageHandler = (userId, payload) => {
 
   setStage(userId, payload.targetStage, serverTime);
 
-  return { status: 'succes' };
+  return { status: 'succes', id: 'moveStage', stage: payload.targetStage };
 };

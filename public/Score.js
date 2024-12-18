@@ -1,7 +1,11 @@
-import { sendEvent } from "./Socket.js";
+import { sendEvent } from './Socket.js';
+import { getStage } from './GameData.js';
 
 class Score {
   score = 0;
+  addScore = 1;
+  forStageChange = 0;
+  stageNum = 1000;
   HIGH_SCORE_KEY = 'highScore';
   stageChange = true;
 
@@ -12,11 +16,14 @@ class Score {
   }
 
   update(deltaTime) {
-    this.score += deltaTime * 0.001;
-    // 점수가 100점 이상이 될 시 서버에 메세지 전송
-    if (Math.floor(this.score) === 10 && this.stageChange) {
-      this.stageChange = false;
-      sendEvent(11, { currentStage: 1000, targetStage: 1001 });
+    this.score += deltaTime * 0.001 * this.addScore;
+    this.forStageChange += deltaTime * 0.001 * this.addScore;
+    if (this.stageNum < 1006 && Math.floor(this.forStageChange) === 10) {
+      sendEvent(11, { currentStage: this.stageNum, targetStage: this.stageNum + 1 });
+      this.stageNum++;
+      this.addScore*=2;
+      this.forStageChange = 0;
+      console.log('stageNum: ', this.stageNum, 'addScore: ', this.addScore)
     }
   }
 
@@ -26,6 +33,9 @@ class Score {
 
   reset() {
     this.score = 0;
+    this.addScore = 1;
+    this.forStageChange = 0;
+    this.stageNum = 1000;
   }
 
   setHighScore() {
